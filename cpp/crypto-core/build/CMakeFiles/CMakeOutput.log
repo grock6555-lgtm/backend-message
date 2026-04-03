@@ -1,0 +1,28 @@
+The system is: Linux - 6.6.87.2-microsoft-standard-WSL2 - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/mnt/c/Users/Компьютер_11/Desktop/nexus-backend/cpp/crypto-core/build/CMakeFiles/3.22.1/CompilerIdCXX/a.out"
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /mnt/c/Users/Компьютер_11/Desktop/nexus-backend/cpp/crypto-core/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_eab21/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_eab21.dir/build.make CMakeFiles/cmTC_eab21.dir/build
+gmake[1]: Entering directory '/mnt/c/Users/Компьютер_11/Desktop/nexus-backend/cpp/crypto-core/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_eab21.dir/testCXXCompiler.cxx.o
+/usr/bin/c++    -o CMakeFiles/cmTC_eab21.dir/testCXXCompiler.cxx.o -c /mnt/c/Users/Компьютер_11/Desktop/nexus-backend/cpp/crypto-core/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_eab21
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eab21.dir/link.txt --verbose=1
+/usr/bin/c++ CMakeFiles/cmTC_eab21.dir/testCXXCompiler.cxx.o -o cmTC_eab21 
+gmake[1]: Leaving directory '/mnt/c/Users/Компьютер_11/Desktop/nexus-backend/cpp/crypto-core/build/CMakeFiles/CMakeTmp'
+
+
+

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.15)
+project(yara_scanner)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(YARA REQUIRED yara)
+add_library(yara_scanner SHARED scanner.cpp)
+target_link_libraries(yara_scanner ${YARA_LIBRARIES})
