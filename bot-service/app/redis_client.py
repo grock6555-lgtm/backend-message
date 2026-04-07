@@ -1,5 +1,5 @@
 import redis.asyncio as redis
-from .config import settings
+from ..config import settings
 
 redis_client = redis.Redis(
     host=settings.REDIS_HOST,

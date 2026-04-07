@@ -100,6 +100,7 @@ services:
       - "9092:9092"
     networks:
       - nexus-network
+    # Простой healthcheck – проверяем, что порт слушается
     healthcheck:
       test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
       interval: 30s
@@ -114,6 +115,7 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports:
       - "9200:9200"
     volumes:
@@ -176,6 +178,7 @@ services:
       - "80:80"
     depends_on:
       - bot-service
+      - nexus-api
     networks:
       - nexus-network
 
@@ -250,3 +253,68 @@ services:
         condition: service_healthy
     networks:
       - nexus-network
+
+  message-cleaner:
+    build: ./nexus-api
+    container_name: nexus-cleaner
+    restart: unless-stopped
+    command: python -m app.workers.delete_expired_messages
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - nexus-network
+
+  nexus-api:
+    build: ./nexus-api
+    container_name: nexus-api
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRE_MINUTES: 15
+      TOTP_SERVICE_URL: http://totp-service:8001
+      BLACKLIST_SERVICE_URL: http://blacklist-service:8002
+      KAFKA_HOST: kafka:9092
+      ELASTICSEARCH_HOST: http://elasticsearch:9200
+      PYTHONUNBUFFERED: 1
+    volumes:
+      - ./libnexus_crypto.so:/app/libnexus_crypto.so
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      totp-service:
+        condition: service_started
+      blacklist-service:
+        condition: service_started
+    networks:
+      - nexus-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
